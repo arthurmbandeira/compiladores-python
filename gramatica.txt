@@ -1,0 +1,111 @@
+<program> => <SequenciaDeclaracao>
+
+<Declaracao> => <DeclaracaoVariavel>
+       | id '(' <ListaParametros> ')' '{' <bloco> '}'
+       | <tipo> id '(' <ListaParametros> ')' '{' <bloco> '}'
+
+<DeclaracaoVariavel> => <tipo> <SequenciaSpecVariavel> ';'
+
+<SpecificacaoVariavel> => id
+           | id '=' <literal>
+           | id '[' numero ']'
+           | id '[' numero ']' '=' '{' <SequenciaLiteral> '}'
+
+<tipo> => "int"
+        | "string"
+        | "bool"
+
+<Parametros> => <tipo> id
+         | <tipo> id '[' ']'
+
+<bloco> => <ListaDeclaracaoVariavel> <ListaComandos>
+
+<comando> => <comandoIF>
+        | <comandoWhile>
+        | <comandoFor>
+        | <comandoBreak>
+        | <comandoReturn>
+        | <comandoRead>
+        | <comandoWrite>
+        | <atribuicao> ';'
+        | <Chamada> ';'
+
+<comandoIF> => "if" '(' <expressao> ')' '{' <bloco> '}'
+          | "if" '(' <expressao> ')' '{' <bloco> '}' "else" '{' <bloco> '}'
+
+<comandoWhile> => "while" '(' <expressao> ')' '{' <bloco> '}'
+
+<comandoFor> => "for" '(' <atribuicao> ';' <expressao> ';' <atribuicao> ')' '{' <bloco> '}'
+
+<comandoBreak> => "break" ';'
+
+<comandoRead> => "read" <variavel> ';'
+
+<comandoWrite> => "write" <ListaExpressao> ';'
+
+<comandoReturn> => "return" ';'
+              | "return" <expressao> ';'
+
+<Chamada> => id '(' <ListaExpressao> ')'
+
+<atribuicao> => <variavel> '='  <expressao>
+          | <variavel> "+=" <expressao>
+          | <variavel> "-=" <expressao>
+          | <variavel> "*=" <expressao>
+          | <variavel> "/=" <expressao>
+          | <variavel> "%=" <expressao>
+
+<variavel> => id
+       | id '[' <expressao> ']'
+
+<expressao> => <expressao> '+'   <expressao>
+       | <expressao> '-'   <expressao>
+       | <expressao> '*'   <expressao>
+       | <expressao> '/'   <expressao>
+       | <expressao> '%'   <expressao>
+       | <expressao> "=="  <expressao>
+       | <expressao> "!="  <expressao>
+       | <expressao> "<="  <expressao>
+       | <expressao> ">="  <expressao>
+       | <expressao> '>'   <expressao>
+       | <expressao> '<'   <expressao>
+       | <expressao> "&&"  <expressao>
+       | <expressao> "||"  <expressao>
+       | '!' <expressao>
+       | '-' <expressao>
+       | <expressao> '?' <expressao> ':' <expressao>
+       | <Chamada>
+       | <variavel>
+       | <literal>
+       | '(' <expressao> ')'
+
+<literal> => numero
+           | string
+           | logico
+
+<ListaParametros> => <SequenciaParametros>
+             | ε
+
+<SequenciaParametros> => <Parametros> ',' <SequenciaParametros>
+            | <Parametros>
+
+<ListaDeclaracaoVariavel> => <DeclaracaoVariavel> <ListaDeclaracaoVariavel>
+              | ε
+
+<SequenciaSpecVariavel> => <SpecificacaoVariavel> ',' <SequenciaSpecVariavel>
+              | <SpecificacaoVariavel>
+
+<SequenciaDeclaracao> => <Declaracao> <SequenciaDeclaracao>
+          | <Declaracao>
+
+<ListaComandos> => <comando> <ListaComandos>
+            | ε
+
+<SequenciaLiteral> => <literal> <SequenciaLiteral>
+              | <literal>
+
+<ListaExpressao> => <SequenciaExpressao>
+           | ε
+
+<SequenciaExpressao> => <expressao> ',' <SequenciaExpressao>
+          | <expressao>

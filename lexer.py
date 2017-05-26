@@ -6,28 +6,28 @@ import ply.lex as lex
 import ply.yacc as yacc
 
 palavras_reservadas = {
-	'bool' : 'BOOL',
-	'string' : 'STRING',
-	'int' : 'INT',
-	'for' : 'FOR',
-	'if' : 'IF',
-	'else' : 'ELSE',
-	'while' : 'WHILE',
-	'true' : 'TRUE',
-	'false' : 'FALSE',
-	'return' : 'RETURN',
- 	'break' : 'BREAK',
+    'bool' : 'BOOL',
+    'string' : 'STRING',
+    'int' : 'INT',
+    'for' : 'FOR',
+    'if' : 'IF',
+    'else' : 'ELSE',
+    'while' : 'WHILE',
+    'true' : 'TRUE',
+    'false' : 'FALSE',
+    'return' : 'RETURN',
+    'break' : 'BREAK',
 }
 
 tokens = [
-	'NOME', 'NUMERO', 'ID', 'CADEIA',
-	'ABREPAREN', 'FECHAPAREN', 'ABRECOLCH', 'FECHACOLCH', 'ABRECHAVE', 'FECHACHAVE',
-	'VIRGULA', 'PONTOVIRGULA',
-	'MAIS', 'MENOS', 'MULT', 'DIV',
-	'IGUAL', 'DIFERENTE', 'MAIOR', 'MAIORIGUAL', 'MENOR', 'MENORIGUAL', 'OU', 'E', 'NEG',
-	'ATRIB', 'MAISATRIB', 'MENOSATRIB', 'MULTATRIB', 'DIVATRIB', 'MODATRIB',
-	'TERNARIO', 'TERNARIOSE', 'TERNARIOSENAO',
-	'COMENTARIO',
+    'NOME', 'NUMERO', 'ID', 'CADEIA',
+    'ABREPAREN', 'FECHAPAREN', 'ABRECOLCH', 'FECHACOLCH', 'ABRECHAVE', 'FECHACHAVE',
+    'VIRGULA', 'PONTOVIRGULA',
+    'MAIS', 'MENOS', 'MULT', 'DIV',
+    'IGUAL', 'DIFERENTE', 'MAIOR', 'MAIORIGUAL', 'MENOR', 'MENORIGUAL', 'OU', 'E', 'NEG',
+    'ATRIB', 'MAISATRIB', 'MENOSATRIB', 'MULTATRIB', 'DIVATRIB', 'MODATRIB',
+    'TERNARIO', 'TERNARIOSE', 'TERNARIOSENAO',
+    'COMENTARIO',
 ] + list(palavras_reservadas.values())
 
 t_MAIS = r'\+'
@@ -63,13 +63,13 @@ t_TERNARIOSENAO = r':'
 t_CADEIA = r'\"(\n|.)*?\"'
 
 def t_NUMERO(t):
-	r'\d+'
-	try:
-		t.value = int(t.value)
-	except ValueError:
-		print("Valor Inteiro muito grande %d", t.value)
-		t.value = 0
-	return t
+    r'\d+'
+    try:
+        t.value = int(t.value)
+    except ValueError:
+        print("Valor Inteiro muito grande %d", t.value)
+        t.value = 0
+    return t
 
 
 # ignorando TAB
@@ -81,7 +81,9 @@ def t_newline(t):
 
 # Error handling rule
 def t_error(t):
-    print("Illegal character '%s'" % t.value[0])
+    column = find_column(data, t)
+    print('LexError(%s,%r,%d,%d)' % (t.type, t.value, t.lineno, column))
+    # print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
 
 def t_ID(t):
@@ -93,6 +95,13 @@ def t_COMENTARIO(t):
     r'((//.*)|(/\*(.|\n)*\*/))'
     pass
     # No return value. Token discarded
+
+def find_column(input, token):
+    last_cr = input.rfind('\n',0,lex.lexer.lexpos)
+    if last_cr < 0:
+        last_cr = 0
+    column = (lex.lexer.lexpos - last_cr) + 1
+    return column
 
 lexer = lex.lex()
 
@@ -137,6 +146,7 @@ lexer.input(data)
 # Tokenize
 while True:
     tok = lexer.token()
+    column = find_column(data, tok)
     if not tok:
         break      # No more input
-    print(tok)
+    print('LexToken(%s,%r,%d,%d)' % (tok.type, tok.value, tok.lineno, column))

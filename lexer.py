@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
 import ply.lex as lex
-import ply.yacc as yacc
 
 palavras_reservadas = {
     'bool' : 'BOOL',
@@ -149,4 +147,6 @@ while True:
     column = find_column(data, tok)
     if not tok:
         break      # No more input
-    print('LexToken(%s,%r,%d,%d)' % (tok.type, tok.value, tok.lineno, column))
+    # print('LexToken(%s,%r,%d,%d)' % (tok.type, tok.value, tok.lineno, column))
+
+

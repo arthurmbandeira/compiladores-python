@@ -18,7 +18,7 @@ palavras_reservadas = {
 }
 
 tokens = [
-    'NOME', 'NUMERO', 'ID', 'CADEIA',
+    'ID', 'CADEIA', 'NUMBER',
     'ABREPAREN', 'FECHAPAREN', 'ABRECOLCH', 'FECHACOLCH', 'ABRECHAVE', 'FECHACHAVE',
     'VIRGULA', 'PONTOVIRGULA',
     'MAIS', 'MENOS', 'MULT', 'DIV',
@@ -37,7 +37,6 @@ t_ABREPAREN = r'\('
 t_FECHAPAREN = r'\)'
 t_ABRECOLCH = r'\['
 t_FECHACOLCH = r'\]'
-t_NOME = r'[a-zA-Z_][a-zA-Z0-9_]*'
 t_ABRECHAVE = r'\{'
 t_FECHACHAVE = r'\}'
 t_VIRGULA = r','
@@ -60,7 +59,7 @@ t_TERNARIOSE = r'\?'
 t_TERNARIOSENAO = r':'
 t_CADEIA = r'\"(\n|.)*?\"'
 
-def t_NUMERO(t):
+def t_NUMBER(t):
     r'\d+'
     try:
         t.value = int(t.value)
@@ -141,12 +140,14 @@ main() {
 # Give the lexer some input
 lexer.input(data)
 
+token_list = []
 # Tokenize
 while True:
     tok = lexer.token()
     column = find_column(data, tok)
     if not tok:
         break      # No more input
+    token_list.append(tok)
     # print('LexToken(%s,%r,%d,%d)' % (tok.type, tok.value, tok.lineno, column))
 
 

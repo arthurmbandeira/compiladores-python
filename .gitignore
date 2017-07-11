@@ -1,2 +1,3 @@
 __pycache__/
 ply-3.10/
+*.pyc

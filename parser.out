@@ -1,0 +1,507 @@
+Created by PLY version 3.10 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    TERNARIO
+    FECHACHAVE
+    NEG
+    ABRECHAVE
+    IGUAL
+    DIFERENTE
+    WHILE
+    RETURN
+    COMENTARIO
+    STRING
+    ATRIB
+    VIRGULA
+    TRUE
+    MAIOR
+    MENORIGUAL
+    MENOSATRIB
+    E
+    MAISATRIB
+    FOR
+    DIVATRIB
+    TERNARIOSENAO
+    MULTATRIB
+    PONTOVIRGULA
+    ELSE
+    IF
+    MODATRIB
+    FALSE
+    MAIORIGUAL
+    TERNARIOSE
+    BREAK
+    INT
+    MENOR
+    BOOL
+    OU
+
+Grammar
+
+Rule 0     S' -> variavel
+Rule 1     variavel -> ID
+Rule 2     variavel -> ID ABRECOLCH expressao FECHACOLCH
+Rule 3     expressao -> expressao MAIS expressao
+Rule 4     expressao -> expressao MENOS expressao
+Rule 5     expressao -> expressao MULT expressao
+Rule 6     expressao -> expressao DIV expressao
+Rule 7     expressao -> variavel
+Rule 8     expressao -> literal
+Rule 9     expressao -> ABREPAREN expressao FECHAPAREN
+Rule 10    literal -> NUMBER
+Rule 11    literal -> CADEIA
+
+Terminals, with rules where they appear
+
+ABRECHAVE            : 
+ABRECOLCH            : 2
+ABREPAREN            : 9
+ATRIB                : 
+BOOL                 : 
+BREAK                : 
+CADEIA               : 11
+COMENTARIO           : 
+DIFERENTE            : 
+DIV                  : 6
+DIVATRIB             : 
+E                    : 
+ELSE                 : 
+FALSE                : 
+FECHACHAVE           : 
+FECHACOLCH           : 2
+FECHAPAREN           : 9
+FOR                  : 
+ID                   : 1 2
+IF                   : 
+IGUAL                : 
+INT                  : 
+MAIOR                : 
+MAIORIGUAL           : 
+MAIS                 : 3
+MAISATRIB            : 
+MENOR                : 
+MENORIGUAL           : 
+MENOS                : 4
+MENOSATRIB           : 
+MODATRIB             : 
+MULT                 : 5
+MULTATRIB            : 
+NEG                  : 
+NUMBER               : 10
+OU                   : 
+PONTOVIRGULA         : 
+RETURN               : 
+STRING               : 
+TERNARIO             : 
+TERNARIOSE           : 
+TERNARIOSENAO        : 
+TRUE                 : 
+VIRGULA              : 
+WHILE                : 
+error                : 
+
+Nonterminals, with rules where they appear
+
+expressao            : 2 3 3 4 4 5 5 6 6 9
+literal              : 8
+variavel             : 7 0
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . variavel
+    (1) variavel -> . ID
+    (2) variavel -> . ID ABRECOLCH expressao FECHACOLCH
+
+    ID              shift and go to state 2
+
+    variavel                       shift and go to state 1
+
+state 1
+
+    (0) S' -> variavel .
+
+
+
+state 2
+
+    (1) variavel -> ID .
+    (2) variavel -> ID . ABRECOLCH expressao FECHACOLCH
+
+    FECHACOLCH      reduce using rule 1 (variavel -> ID .)
+    MAIS            reduce using rule 1 (variavel -> ID .)
+    MENOS           reduce using rule 1 (variavel -> ID .)
+    MULT            reduce using rule 1 (variavel -> ID .)
+    DIV             reduce using rule 1 (variavel -> ID .)
+    FECHAPAREN      reduce using rule 1 (variavel -> ID .)
+    $end            reduce using rule 1 (variavel -> ID .)
+    ABRECOLCH       shift and go to state 3
+
+
+state 3
+
+    (2) variavel -> ID ABRECOLCH . expressao FECHACOLCH
+    (3) expressao -> . expressao MAIS expressao
+    (4) expressao -> . expressao MENOS expressao
+    (5) expressao -> . expressao MULT expressao
+    (6) expressao -> . expressao DIV expressao
+    (7) expressao -> . variavel
+    (8) expressao -> . literal
+    (9) expressao -> . ABREPAREN expressao FECHAPAREN
+    (1) variavel -> . ID
+    (2) variavel -> . ID ABRECOLCH expressao FECHACOLCH
+    (10) literal -> . NUMBER
+    (11) literal -> . CADEIA
+
+    ABREPAREN       shift and go to state 5
+    ID              shift and go to state 2
+    NUMBER          shift and go to state 7
+    CADEIA          shift and go to state 9
+
+    expressao                      shift and go to state 6
+    variavel                       shift and go to state 4
+    literal                        shift and go to state 8
+
+state 4
+
+    (7) expressao -> variavel .
+
+    FECHAPAREN      reduce using rule 7 (expressao -> variavel .)
+    MAIS            reduce using rule 7 (expressao -> variavel .)
+    MENOS           reduce using rule 7 (expressao -> variavel .)
+    MULT            reduce using rule 7 (expressao -> variavel .)
+    DIV             reduce using rule 7 (expressao -> variavel .)
+    FECHACOLCH      reduce using rule 7 (expressao -> variavel .)
+
+
+state 5
+
+    (9) expressao -> ABREPAREN . expressao FECHAPAREN
+    (3) expressao -> . expressao MAIS expressao
+    (4) expressao -> . expressao MENOS expressao
+    (5) expressao -> . expressao MULT expressao
+    (6) expressao -> . expressao DIV expressao
+    (7) expressao -> . variavel
+    (8) expressao -> . literal
+    (9) expressao -> . ABREPAREN expressao FECHAPAREN
+    (1) variavel -> . ID
+    (2) variavel -> . ID ABRECOLCH expressao FECHACOLCH
+    (10) literal -> . NUMBER
+    (11) literal -> . CADEIA
+
+    ABREPAREN       shift and go to state 5
+    ID              shift and go to state 2
+    NUMBER          shift and go to state 7
+    CADEIA          shift and go to state 9
+
+    expressao                      shift and go to state 10
+    variavel                       shift and go to state 4
+    literal                        shift and go to state 8
+
+state 6
+
+    (2) variavel -> ID ABRECOLCH expressao . FECHACOLCH
+    (3) expressao -> expressao . MAIS expressao
+    (4) expressao -> expressao . MENOS expressao
+    (5) expressao -> expressao . MULT expressao
+    (6) expressao -> expressao . DIV expressao
+
+    FECHACOLCH      shift and go to state 14
+    MAIS            shift and go to state 11
+    MENOS           shift and go to state 12
+    MULT            shift and go to state 15
+    DIV             shift and go to state 13
+
+
+state 7
+
+    (10) literal -> NUMBER .
+
+    FECHAPAREN      reduce using rule 10 (literal -> NUMBER .)
+    MAIS            reduce using rule 10 (literal -> NUMBER .)
+    MENOS           reduce using rule 10 (literal -> NUMBER .)
+    MULT            reduce using rule 10 (literal -> NUMBER .)
+    DIV             reduce using rule 10 (literal -> NUMBER .)
+    FECHACOLCH      reduce using rule 10 (literal -> NUMBER .)
+
+
+state 8
+
+    (8) expressao -> literal .
+
+    FECHAPAREN      reduce using rule 8 (expressao -> literal .)
+    MAIS            reduce using rule 8 (expressao -> literal .)
+    MENOS           reduce using rule 8 (expressao -> literal .)
+    MULT            reduce using rule 8 (expressao -> literal .)
+    DIV             reduce using rule 8 (expressao -> literal .)
+    FECHACOLCH      reduce using rule 8 (expressao -> literal .)
+
+
+state 9
+
+    (11) literal -> CADEIA .
+
+    FECHAPAREN      reduce using rule 11 (literal -> CADEIA .)
+    MAIS            reduce using rule 11 (literal -> CADEIA .)
+    MENOS           reduce using rule 11 (literal -> CADEIA .)
+    MULT            reduce using rule 11 (literal -> CADEIA .)
+    DIV             reduce using rule 11 (literal -> CADEIA .)
+    FECHACOLCH      reduce using rule 11 (literal -> CADEIA .)
+
+
+state 10
+
+    (9) expressao -> ABREPAREN expressao . FECHAPAREN
+    (3) expressao -> expressao . MAIS expressao
+    (4) expressao -> expressao . MENOS expressao
+    (5) expressao -> expressao . MULT expressao
+    (6) expressao -> expressao . DIV expressao
+
+    FECHAPAREN      shift and go to state 16
+    MAIS            shift and go to state 11
+    MENOS           shift and go to state 12
+    MULT            shift and go to state 15
+    DIV             shift and go to state 13
+
+
+state 11
+
+    (3) expressao -> expressao MAIS . expressao
+    (3) expressao -> . expressao MAIS expressao
+    (4) expressao -> . expressao MENOS expressao
+    (5) expressao -> . expressao MULT expressao
+    (6) expressao -> . expressao DIV expressao
+    (7) expressao -> . variavel
+    (8) expressao -> . literal
+    (9) expressao -> . ABREPAREN expressao FECHAPAREN
+    (1) variavel -> . ID
+    (2) variavel -> . ID ABRECOLCH expressao FECHACOLCH
+    (10) literal -> . NUMBER
+    (11) literal -> . CADEIA
+
+    ABREPAREN       shift and go to state 5
+    ID              shift and go to state 2
+    NUMBER          shift and go to state 7
+    CADEIA          shift and go to state 9
+
+    expressao                      shift and go to state 17
+    variavel                       shift and go to state 4
+    literal                        shift and go to state 8
+
+state 12
+
+    (4) expressao -> expressao MENOS . expressao
+    (3) expressao -> . expressao MAIS expressao
+    (4) expressao -> . expressao MENOS expressao
+    (5) expressao -> . expressao MULT expressao
+    (6) expressao -> . expressao DIV expressao
+    (7) expressao -> . variavel
+    (8) expressao -> . literal
+    (9) expressao -> . ABREPAREN expressao FECHAPAREN
+    (1) variavel -> . ID
+    (2) variavel -> . ID ABRECOLCH expressao FECHACOLCH
+    (10) literal -> . NUMBER
+    (11) literal -> . CADEIA
+
+    ABREPAREN       shift and go to state 5
+    ID              shift and go to state 2
+    NUMBER          shift and go to state 7
+    CADEIA          shift and go to state 9
+
+    expressao                      shift and go to state 18
+    variavel                       shift and go to state 4
+    literal                        shift and go to state 8
+
+state 13
+
+    (6) expressao -> expressao DIV . expressao
+    (3) expressao -> . expressao MAIS expressao
+    (4) expressao -> . expressao MENOS expressao
+    (5) expressao -> . expressao MULT expressao
+    (6) expressao -> . expressao DIV expressao
+    (7) expressao -> . variavel
+    (8) expressao -> . literal
+    (9) expressao -> . ABREPAREN expressao FECHAPAREN
+    (1) variavel -> . ID
+    (2) variavel -> . ID ABRECOLCH expressao FECHACOLCH
+    (10) literal -> . NUMBER
+    (11) literal -> . CADEIA
+
+    ABREPAREN       shift and go to state 5
+    ID              shift and go to state 2
+    NUMBER          shift and go to state 7
+    CADEIA          shift and go to state 9
+
+    expressao                      shift and go to state 19
+    variavel                       shift and go to state 4
+    literal                        shift and go to state 8
+
+state 14
+
+    (2) variavel -> ID ABRECOLCH expressao FECHACOLCH .
+
+    FECHACOLCH      reduce using rule 2 (variavel -> ID ABRECOLCH expressao FECHACOLCH .)
+    MAIS            reduce using rule 2 (variavel -> ID ABRECOLCH expressao FECHACOLCH .)
+    MENOS           reduce using rule 2 (variavel -> ID ABRECOLCH expressao FECHACOLCH .)
+    MULT            reduce using rule 2 (variavel -> ID ABRECOLCH expressao FECHACOLCH .)
+    DIV             reduce using rule 2 (variavel -> ID ABRECOLCH expressao FECHACOLCH .)
+    FECHAPAREN      reduce using rule 2 (variavel -> ID ABRECOLCH expressao FECHACOLCH .)
+    $end            reduce using rule 2 (variavel -> ID ABRECOLCH expressao FECHACOLCH .)
+
+
+state 15
+
+    (5) expressao -> expressao MULT . expressao
+    (3) expressao -> . expressao MAIS expressao
+    (4) expressao -> . expressao MENOS expressao
+    (5) expressao -> . expressao MULT expressao
+    (6) expressao -> . expressao DIV expressao
+    (7) expressao -> . variavel
+    (8) expressao -> . literal
+    (9) expressao -> . ABREPAREN expressao FECHAPAREN
+    (1) variavel -> . ID
+    (2) variavel -> . ID ABRECOLCH expressao FECHACOLCH
+    (10) literal -> . NUMBER
+    (11) literal -> . CADEIA
+
+    ABREPAREN       shift and go to state 5
+    ID              shift and go to state 2
+    NUMBER          shift and go to state 7
+    CADEIA          shift and go to state 9
+
+    expressao                      shift and go to state 20
+    variavel                       shift and go to state 4
+    literal                        shift and go to state 8
+
+state 16
+
+    (9) expressao -> ABREPAREN expressao FECHAPAREN .
+
+    FECHAPAREN      reduce using rule 9 (expressao -> ABREPAREN expressao FECHAPAREN .)
+    MAIS            reduce using rule 9 (expressao -> ABREPAREN expressao FECHAPAREN .)
+    MENOS           reduce using rule 9 (expressao -> ABREPAREN expressao FECHAPAREN .)
+    MULT            reduce using rule 9 (expressao -> ABREPAREN expressao FECHAPAREN .)
+    DIV             reduce using rule 9 (expressao -> ABREPAREN expressao FECHAPAREN .)
+    FECHACOLCH      reduce using rule 9 (expressao -> ABREPAREN expressao FECHAPAREN .)
+
+
+state 17
+
+    (3) expressao -> expressao MAIS expressao .
+    (3) expressao -> expressao . MAIS expressao
+    (4) expressao -> expressao . MENOS expressao
+    (5) expressao -> expressao . MULT expressao
+    (6) expressao -> expressao . DIV expressao
+
+  ! shift/reduce conflict for MAIS resolved as shift
+  ! shift/reduce conflict for MENOS resolved as shift
+  ! shift/reduce conflict for MULT resolved as shift
+  ! shift/reduce conflict for DIV resolved as shift
+    FECHAPAREN      reduce using rule 3 (expressao -> expressao MAIS expressao .)
+    FECHACOLCH      reduce using rule 3 (expressao -> expressao MAIS expressao .)
+    MAIS            shift and go to state 11
+    MENOS           shift and go to state 12
+    MULT            shift and go to state 15
+    DIV             shift and go to state 13
+
+  ! MAIS            [ reduce using rule 3 (expressao -> expressao MAIS expressao .) ]
+  ! MENOS           [ reduce using rule 3 (expressao -> expressao MAIS expressao .) ]
+  ! MULT            [ reduce using rule 3 (expressao -> expressao MAIS expressao .) ]
+  ! DIV             [ reduce using rule 3 (expressao -> expressao MAIS expressao .) ]
+
+
+state 18
+
+    (4) expressao -> expressao MENOS expressao .
+    (3) expressao -> expressao . MAIS expressao
+    (4) expressao -> expressao . MENOS expressao
+    (5) expressao -> expressao . MULT expressao
+    (6) expressao -> expressao . DIV expressao
+
+  ! shift/reduce conflict for MAIS resolved as shift
+  ! shift/reduce conflict for MENOS resolved as shift
+  ! shift/reduce conflict for MULT resolved as shift
+  ! shift/reduce conflict for DIV resolved as shift
+    FECHAPAREN      reduce using rule 4 (expressao -> expressao MENOS expressao .)
+    FECHACOLCH      reduce using rule 4 (expressao -> expressao MENOS expressao .)
+    MAIS            shift and go to state 11
+    MENOS           shift and go to state 12
+    MULT            shift and go to state 15
+    DIV             shift and go to state 13
+
+  ! MAIS            [ reduce using rule 4 (expressao -> expressao MENOS expressao .) ]
+  ! MENOS           [ reduce using rule 4 (expressao -> expressao MENOS expressao .) ]
+  ! MULT            [ reduce using rule 4 (expressao -> expressao MENOS expressao .) ]
+  ! DIV             [ reduce using rule 4 (expressao -> expressao MENOS expressao .) ]
+
+
+state 19
+
+    (6) expressao -> expressao DIV expressao .
+    (3) expressao -> expressao . MAIS expressao
+    (4) expressao -> expressao . MENOS expressao
+    (5) expressao -> expressao . MULT expressao
+    (6) expressao -> expressao . DIV expressao
+
+  ! shift/reduce conflict for MAIS resolved as shift
+  ! shift/reduce conflict for MENOS resolved as shift
+  ! shift/reduce conflict for MULT resolved as shift
+  ! shift/reduce conflict for DIV resolved as shift
+    FECHAPAREN      reduce using rule 6 (expressao -> expressao DIV expressao .)
+    FECHACOLCH      reduce using rule 6 (expressao -> expressao DIV expressao .)
+    MAIS            shift and go to state 11
+    MENOS           shift and go to state 12
+    MULT            shift and go to state 15
+    DIV             shift and go to state 13
+
+  ! MAIS            [ reduce using rule 6 (expressao -> expressao DIV expressao .) ]
+  ! MENOS           [ reduce using rule 6 (expressao -> expressao DIV expressao .) ]
+  ! MULT            [ reduce using rule 6 (expressao -> expressao DIV expressao .) ]
+  ! DIV             [ reduce using rule 6 (expressao -> expressao DIV expressao .) ]
+
+
+state 20
+
+    (5) expressao -> expressao MULT expressao .
+    (3) expressao -> expressao . MAIS expressao
+    (4) expressao -> expressao . MENOS expressao
+    (5) expressao -> expressao . MULT expressao
+    (6) expressao -> expressao . DIV expressao
+
+  ! shift/reduce conflict for MAIS resolved as shift
+  ! shift/reduce conflict for MENOS resolved as shift
+  ! shift/reduce conflict for MULT resolved as shift
+  ! shift/reduce conflict for DIV resolved as shift
+    FECHAPAREN      reduce using rule 5 (expressao -> expressao MULT expressao .)
+    FECHACOLCH      reduce using rule 5 (expressao -> expressao MULT expressao .)
+    MAIS            shift and go to state 11
+    MENOS           shift and go to state 12
+    MULT            shift and go to state 15
+    DIV             shift and go to state 13
+
+  ! MAIS            [ reduce using rule 5 (expressao -> expressao MULT expressao .) ]
+  ! MENOS           [ reduce using rule 5 (expressao -> expressao MULT expressao .) ]
+  ! MULT            [ reduce using rule 5 (expressao -> expressao MULT expressao .) ]
+  ! DIV             [ reduce using rule 5 (expressao -> expressao MULT expressao .) ]
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for MAIS in state 17 resolved as shift
+WARNING: shift/reduce conflict for MENOS in state 17 resolved as shift
+WARNING: shift/reduce conflict for MULT in state 17 resolved as shift
+WARNING: shift/reduce conflict for DIV in state 17 resolved as shift
+WARNING: shift/reduce conflict for MAIS in state 18 resolved as shift
+WARNING: shift/reduce conflict for MENOS in state 18 resolved as shift
+WARNING: shift/reduce conflict for MULT in state 18 resolved as shift
+WARNING: shift/reduce conflict for DIV in state 18 resolved as shift
+WARNING: shift/reduce conflict for MAIS in state 19 resolved as shift
+WARNING: shift/reduce conflict for MENOS in state 19 resolved as shift
+WARNING: shift/reduce conflict for MULT in state 19 resolved as shift
+WARNING: shift/reduce conflict for DIV in state 19 resolved as shift
+WARNING: shift/reduce conflict for MAIS in state 20 resolved as shift
+WARNING: shift/reduce conflict for MENOS in state 20 resolved as shift
+WARNING: shift/reduce conflict for MULT in state 20 resolved as shift
+WARNING: shift/reduce conflict for DIV in state 20 resolved as shift

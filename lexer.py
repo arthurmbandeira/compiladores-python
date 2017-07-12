@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import sys
+import getopt
+
 import re
 import ply.lex as lex
 
@@ -15,23 +18,25 @@ palavras_reservadas = {
     'false' : 'FALSE',
     'return' : 'RETURN',
     'break' : 'BREAK',
+    'read' : 'READ',
+    'write' : 'WRITE',
 }
 
 tokens = [
     'ID', 'CADEIA', 'NUMBER',
     'ABREPAREN', 'FECHAPAREN', 'ABRECOLCH', 'FECHACOLCH', 'ABRECHAVE', 'FECHACHAVE',
     'VIRGULA', 'PONTOVIRGULA',
-    'MAIS', 'MENOS', 'MULT', 'DIV',
+    'MAIS', 'MENOS', 'MULT', 'DIV', 'MOD',
     'IGUAL', 'DIFERENTE', 'MAIOR', 'MAIORIGUAL', 'MENOR', 'MENORIGUAL', 'OU', 'E', 'NEG',
-    'ATRIB', 'MAISATRIB', 'MENOSATRIB', 'MULTATRIB', 'DIVATRIB', 'MODATRIB',
-    'TERNARIO', 'TERNARIOSE', 'TERNARIOSENAO',
-    'COMENTARIO',
+    'ATRIB', 'MAISATRIB', 'MENOSATRIB', 'MULTATRIB', 'DIVATRIB', 'MODATRIB', 'SINAL',
+    'TERNARIOSE', 'TERNARIOSENAO',
 ] + list(palavras_reservadas.values())
 
 t_MAIS = r'\+'
 t_MENOS = r'-'
 t_MULT = r'\*'
 t_DIV = r'/'
+t_MOD = r'%'
 t_IGUAL = r'=='
 t_ABREPAREN = r'\('
 t_FECHAPAREN = r'\)'
@@ -49,6 +54,7 @@ t_MENORIGUAL = r'<='
 t_OU = r'\|\|'
 t_E = r'&&'
 t_NEG = r'!'
+t_SINAL = r'-'
 t_ATRIB = r'='
 t_MAISATRIB = r'\+='
 t_MENOSATRIB = r'-='
@@ -78,7 +84,7 @@ def t_newline(t):
 
 # Error handling rule
 def t_error(t):
-    column = find_column(data, t)
+    column = find_column(t.lexer.lexdata, t)
     print('LexError(%s,%r,%d,%d)' % (t.type, t.value, t.lineno, column))
     # print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
@@ -88,10 +94,10 @@ def t_ID(t):
     t.type = palavras_reservadas.get(t.value,'ID')
     return t
 
-def t_COMENTARIO(t):
+def t_comment_multiline(t):
     r'((//.*)|(/\*(.|\n)*\*/))'
-    pass
     # No return value. Token discarded
+    pass
 
 def find_column(input, token):
     last_cr = input.rfind('\n',0,lex.lexer.lexpos)
@@ -100,54 +106,41 @@ def find_column(input, token):
     column = (lex.lexer.lexpos - last_cr) + 1
     return column
 
-lexer = lex.lex()
 
-data = """
-int v[10];
-/*
-Procedimento de ordenação por troca
-Observe como um parâmetro de arranjo é declarado
-*/
-bubblesort(int v[], int n) {
-  int i=0, j;
-  bool trocou = true;
-  while (i < n-1 && trocou) {
-    trocou = false;
-    for (j=0; j < n-i-1; j+=1) {
-      if (v[j] > v[j+1]) {
-        int aux;
-        aux = v[j];
-        v[j] = v[j+1];
-        v[j+1] = aux;
-        trocou = true;
-      }
-    }
-    i += 1;
-  }
-}
-main() {
-  int i;
-  for (i=0; i < 10; i+=1) {
-    read v[i];
-  }
-  bubblesort(v, 10);
-  for (i=0; i < 10; i+=1) {
-    write v[i], " ";
-  }
-}
-"""
+def main(argv):
+    try:
+        opts, args = getopt.getopt(argv, "hf:", ["file"])
+    except getopt.GetoptError:
+        print('program.py -f <file>')
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == '-h':
+            print('program.py -f <file>')
+            sys.exit()
+        elif opt in ("-f", "--file"):
+            f = arg
 
-# Give the lexer some input
-lexer.input(data)
+    input_ = ''
+    with open(f, 'r') as file:
+        file = open(f, 'r')
+        for line in file:
+            input_ += line
 
-token_list = []
-# Tokenize
-while True:
-    tok = lexer.token()
-    column = find_column(data, tok)
-    if not tok:
-        break      # No more input
-    token_list.append(tok)
-    # print('LexToken(%s,%r,%d,%d)' % (tok.type, tok.value, tok.lineno, column))
+    lexer = lex.lex()
+    # Give the lexer some input
+    lexer.input(input_)
+
+    token_list = []
+    # Tokenize
+    while True:
+        tok = lexer.token()
+        column = find_column(input_, tok)
+        if not tok:
+            break      # No more input
+        token_list.append(tok)
+        # print('LexToken(%s,%r,%d,%d)' % (tok.type, tok.value, tok.lineno, column))
+
+    file.close()
 
 
+main(sys.argv[1:])

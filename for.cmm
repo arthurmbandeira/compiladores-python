@@ -1,0 +1,10 @@
+main() {
+  int i;
+  for (i=0; i < 10; i+=1) {
+    read v[i];
+ }
+ bubblesort(v, 10);
+ for (i=0; i < 10; i+=1) {
+  write v[i], " ";
+ }
+}

@@ -1,0 +1,7 @@
+bool a = true;
+
+int func() {
+	while (a) {
+
+	}
+}

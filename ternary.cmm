@@ -1,0 +1,6 @@
+main(){
+  int codigo = 0;
+  if (codigo){
+  codigo == 0 ? codigo += 10 : codigo -=10
+  }
+}

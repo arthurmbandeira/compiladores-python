@@ -1,0 +1,115 @@
+<program> => <decSeq>
+
+<dec> => <varDec>
+       | id '(' <paramList> ')' '{' <block> '}'
+       | <type> id '(' <paramList> ')' '{' <block> '}'
+
+<varDec> => <type> <varSpecSeq> ';'
+
+<varSpec> => id
+           | id '=' <literal>
+           | id '[' num ']'
+           | id '[' num ']' '=' '{' <literalSeq> '}'
+
+<type> => "int"
+        | "string"
+        | "bool"
+
+<param> => <type> id
+         | <type> id '[' ']'
+
+<block> => <varDecList> <stmtList>
+
+<stmt> => <ifStmt>
+        | <whileStmt>
+        | <forStmt>
+        | <breakStmt>
+        | <returnStmt>
+        | <readStmt>
+        | <writeStmt>
+        | <assign> ';'
+        | <subCall> ';'
+        | <procedure>
+
+<ifStmt> => "if" '(' <exp> ')' '{' <block> '}'
+          | "if" '(' <exp> ')' '{' <block> '}' "else" '{' <block> '}'
+
+<whileStmt> => "while" '(' <exp> ')' '{' <block> '}'
+
+<forStmt> => "for" '(' <assign> ';' <exp> ';' <assign> ')' '{' <block> '}'
+
+<breakStmt> => "break" ';'
+
+<readStmt> => "read" <var> ';'
+
+<writeStmt> => "write" <expList> ';'
+
+<returnStmt> => "return" ';'
+              | "return" <exp> ';'
+
+<subCall> => id '(' <expList> ')'
+
+<procedure> => id '(' <expList> ')' '{' <block> '}'
+
+<assign> => <var> '='  <exp>
+          | <var> "+=" <exp>
+          | <var> "-=" <exp>
+          | <var> "*=" <exp>
+          | <var> "/=" <exp>
+          | <var> "%=" <exp>
+
+<var> => id
+       | id '[' <exp> ']'
+
+<exp> => <exp> '+'   <exp>
+       | <exp> '-'   <exp>
+       | <exp> '*'   <exp>
+       | <exp> '/'   <exp>
+       | <exp> '%'   <exp>
+       | <exp> "=="  <exp>
+       | <exp> "!="  <exp>
+       | <exp> "<="  <exp>
+       | <exp> ">="  <exp>
+       | <exp> '>'   <exp>
+       | <exp> '<'   <exp>
+       | <exp> "&&"  <exp>
+       | <exp> "||"  <exp>
+       | '!' <exp>
+       | '-' <exp>
+       | <exp> '?' <exp> ':' <exp>
+       | <subCall>
+       | <var>
+       | <literal>
+       | '(' <exp> ')'
+       | <param>
+
+<literal> => num
+           | str
+           | logic
+
+<paramList> => <paramSeq>
+             | ε
+
+<paramSeq> => <param> ',' <paramSeq>
+            | <param>
+
+<varDecList> => <varDec> <varDecList>
+              | ε
+
+<varSpecSeq> => <varSpec> ',' <varSpecSeq>
+              | <varSpec>
+
+<decSeq> => <dec> <decSeq>
+          | <dec>
+
+<stmtList> => <stmt> <stmtList>
+            | ε
+
+<literalSeq> => <literal> ',' <literalSeq>
+              | <literal>
+
+<expList> => <expSeq>
+           | ε
+
+<expSeq> => <exp> ',' <expSeq>
+          | <exp>

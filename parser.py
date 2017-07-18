@@ -19,20 +19,59 @@ precedence = (
     ('left', 'NEG', 'SINAL',)
 )
 
+# class Node:
+#     def __init__(self, type_, children=None, leaf=None):
+#         self.type_ = type_
+#         if children:
+#             self.children = children
+#         else:
+#             self.children = []
+#         self.leaf = leaf
+
+
+class Node(object):
+    __slots__ = ()
+    
+
+    def children(self):
+        pass
+
+
+# class Dec(Node):
+#     __slots__ = ('type', )
+
+
+
+# class Expression: pass
+
+
+# class Number(Expression):
+#     """docstring for Number"""
+#     def __init__(self, value):
+#         self.type_ = "number"
+#         self.arg = arg
+        
+
+
 # print tokens
 
 def p_program(p):
     ''' program : decSeq'''
-    p[0] = ('Program', p[1])
+    # p[0] = Node('Program', p[1])
 
 
 def p_dec(p):
-
     '''
     dec : varDec
         | ID ABREPAREN paramList FECHAPAREN ABRECHAVE block FECHACHAVE
         | type ID ABREPAREN paramList FECHAPAREN ABRECHAVE block FECHACHAVE
     '''
+    # if len(p) == 2:
+    #     p[0] = Node('dec', p[1])
+    # elif len(p) == 8:
+    #     p[0] = Node('dec', )
+    # elif len(p) == 9:
+    #     p[0] = Node('dec', )
 
 
 def p_var_dec(p):
@@ -119,15 +158,41 @@ def p_sub_call(p):
     '''subCall : ID ABREPAREN expList FECHAPAREN'''
 
 
+class Assign(Node):
+    __slots__ = ('op', 'left', 'right')
+    def __init__(self, op, left, right):
+        self.op = op
+        self.left = left
+        self.right = right
+
+
+    def children(self):
+        node_list = []
+        if self.left is not None: node_list.append(('left', self.left))
+        if self.right is not None: node_list.append(('right', self.right))
+        
+        return node_list
+
+
 def p_assign(p):
     '''
-    assign : var ATRIB  exp
+    assign : var ATRIB exp
            | var MAISATRIB exp
            | var MENOSATRIB exp
            | var MULTATRIB exp
            | var DIVATRIB exp
            | var MODATRIB exp
     '''
+    p[0] = Assign(p[2], p[1], p[3])
+
+
+class Variable(Node):
+    __slots__ = ('id', 'exp')
+    def __init__(self, id, exp):
+        self.id = id
+
+    def children(self):
+        pass
 
 
 def p_var(p):
@@ -135,6 +200,40 @@ def p_var(p):
     var : ID
         | ID ABRECOLCH exp FECHACOLCH
     '''
+    # if len(p) == 2:
+    #     p[0] = Node('var', children=p[1])
+    # else:
+    #     p[0] = Node('var', children=p[3])
+
+
+class BinaryOp(Node):
+    __slots__ = ('op', 'left', 'right')
+    def __init__(self, op, left, right):
+        self.op = op
+        self.left = left
+        self.right = right
+
+
+    def children(self):
+        node_list = []
+        if self.left is not None: node_list.append(('left', self.left))
+        if self.right is not None: node_list.append(('right', self.right))
+        
+        return node_list
+
+
+class UnaryOp(Node):
+    __slots__ = ('op', 'right')
+    def __init__(self, op, right):
+        self.op = op
+        self.right = right
+
+
+    def children(self):
+        node_list = []
+        if self.right is not None: node_list.append(('right', self.right))
+        
+        return node_list
 
 
 def p_exp(p):
@@ -161,6 +260,22 @@ def p_exp(p):
         | ABREPAREN exp FECHAPAREN
         | param
     '''
+    if len(p) == 4:
+        if p[1] == 'exp':
+            p[0] = BinaryOp(op=p[2], left=p[1], right=p[3])
+            # p[0] = Node('exp', children=[p[1], p[3]], leaf=p[2])
+        else:
+            # p[0] = Node('exp', children=p[2])
+            pass
+    elif len(p) == 3:
+        # p[0] = Node('exp', children=p[2], leaf=p[1])
+        pass
+    elif len(p) == 6:
+        pass
+        # p[0] = Node('exp', )
+    elif len(p) == 1:
+        # p[0] = Node('exp', children=p[1])
+        p[0] = UnaryOp(op=p[1], right=p[2])
 
 
 def p_literal(p):

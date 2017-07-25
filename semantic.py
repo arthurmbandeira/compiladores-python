@@ -11,9 +11,6 @@ class Node(object):
 #             self.children = []
 #         self.leaf = leaf
 
-# class Dec(Node):
-#     __slots__ = ('type', )
-
 
 # class Expression: pass
 
@@ -39,10 +36,10 @@ class DecSeq(Node):
 
 
 class Dec(Node):
-    __slots__ = ('type', 'id', 'param_list', 'block', 'var_dec')
+    __slots__ = ('type_', 'id_', 'param_list', 'block', 'var_dec')
     def __init__(self, type_=None, id_=None, param_list=None, block=None, var_dec=None):
-        self.type = type_
-        self.id = id_
+        self.type_ = type_
+        self.id_ = id_
         self.param_list = param_list
         self.block = block
         self.var_dec = var_dec
@@ -62,6 +59,33 @@ class VarSpec(Node):
         self.literal = literal
         self.number = number
         self.literal_seq = literal_seq
+
+
+class Type(Node):
+    __slots__ = ('type_')
+    def __init__(self, type_):
+        self.type_ = type_
+
+
+class Param(Node):
+    __slots__ = ('type_', 'id_', 'array')
+    def __init__(self, type_, id_, array):
+        self.type_ = type_
+        self.id_ = id_
+        self.array = array
+
+
+class Block(Node):
+    __slots__ = ('var_dec_list', 'stmt_list')
+    def __init__(self, var_dec_list, stmt_list):
+        self.var_dec_list = var_dec_list
+        self.stmt_list = stmt_list
+
+
+class Stmt(Node):
+    __slots__ = ('stmt')
+    def __init__(self, stmt):
+        self.stmt = stmt
 
 
 class Assign(Node):

@@ -72,6 +72,7 @@ def p_type(p):
          | STRING
          | BOOL
     '''
+    p[0] = Type(type_=p[1])
 
 
 def p_param(p):
@@ -79,10 +80,15 @@ def p_param(p):
     param : type ID
           | type ID ABRECOLCH FECHACOLCH
     '''
+    if len(p) == 3:
+        p[0] = Param(type_=p[1], id_=p[2], array=False)
+    elif len(p) == 5:
+        p[0] = Param(type_=p[1], id_=p[2], array=True)
 
 
 def p_block(p):
     ''' block : varDecList stmtList'''
+    p[0] = Block(var_dec_list=p[1], stmt_list=p[2])
 
 
 def p_stmt(p):
@@ -97,6 +103,7 @@ def p_stmt(p):
            | assign PONTOVIRGULA
            | subCall PONTOVIRGULA
     '''
+    p[0] = Stmt(stmt=p[1])
 
 
 def p_if_stmt(p):
@@ -104,6 +111,10 @@ def p_if_stmt(p):
     ifStmt : IF ABREPAREN exp FECHAPAREN ABRECHAVE block FECHACHAVE
            | IF ABREPAREN exp FECHAPAREN FECHACHAVE block FECHACHAVE ELSE ABRECHAVE block FECHACHAVE
     '''
+    if len(p) == 8:
+        p[0] = IfStmt(if_=p[1], exp=p[3], block1=p[6])
+    if len(p) == 12:
+        p[0] = IfStmt(if_=p[1], exp=p[3], block1=p[6], else_=p[8], block2=p[10])
 
 
 def p_while_stmt(p):
@@ -347,6 +358,10 @@ def main(argv):
     result = parser.parse(input_)
     print(result)
     print(result.dec_seq)
+    print(result.dec_seq.dec)
+    print(result.dec_seq.dec.var_dec)
+    print(result.dec_seq.dec.var_dec.type_)
+    print(result.dec_seq.dec.var_dec.type_.type_)
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 bool a = true;
 
-int func() {
+int main() {
 	while (a) {
-
+        a = false;
 	}
 }

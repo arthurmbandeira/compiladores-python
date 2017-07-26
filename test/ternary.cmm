@@ -1,4 +1,6 @@
-int main(){
-    int codigo = 1;
-    (codigo == 1) ? (codigo == 10) : (codigo == 2);
+bool a = true;
+bool b = false;
+
+teste() {
+    n = 1 > 0 ? a : b;
 }

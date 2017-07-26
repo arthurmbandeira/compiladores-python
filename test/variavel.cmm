@@ -3,3 +3,4 @@ string str2 = "String 2";
 string str1, str2 = "String 2";
 bool i, j = true;
 int v[10], z[1] = {100, 200};
+codigo == 0 ? true : false;

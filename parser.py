@@ -6,11 +6,11 @@ import getopt
 import ply.yacc as yacc
 
 from lexer import tokens
-# import lexer
+import ply.lex as lex
+lex.lexer.lineno = 1
 
 from semantic import *
 
-line_offset = 0
 
 
 precedence = (
@@ -207,14 +207,6 @@ def p_exp(p):
         | ABREPAREN exp FECHAPAREN
         | param
     '''
-    # if len(p) == 4:
-    #     p[0] = BinaryOp(op=p[2], left=p[1], right=p[3])
-    # elif len(p) == 3:
-    #     p[0] = UnaryOp(op=p[1], right=p[2])
-    # elif len(p) == 2:
-    #     p[0] = p[1]
-    # elif len(p) == 6:
-    #     p[0] = TernaryOp(op=p[1], op_if=p[3], op_else=p[5])
     if len(p) == 4:
         if p[1] == '(':
             p[0] = Exp(op=p[2])
@@ -225,7 +217,6 @@ def p_exp(p):
     elif len(p) == 2:
         p[0] = Exp(op=p[1])
     elif len(p) == 6:
-        print p[1], p[3], p[5]
         p[0] = Exp(op=p[1], left=p[3], right=p[5])
 
 
@@ -265,8 +256,6 @@ def p_var_dec_list(p):
     '''
     if p[1]:
         p[0] = VarDecList(var_dec=p[1], var_dec_list=p[2])
-    # else:
-    #     p_empty(p[1])
 
 
 def p_var_spec_seq(p):
@@ -340,7 +329,7 @@ def p_error(p):
     column = p.lexer.lexpos - last_cr - 1
 
     if p:
-        print("Erro de sintaxe em {0} na linha {1} coluna {2}".format(p.value, (p.lexer.lineno - line_offset), column))
+        print("Erro de sintaxe em {0} na linha {1} coluna {2}".format(p.value, p.lexer.lineno, column))
         # yacc.yacc().errok()
     else:
         print("Erro de sintaxe EOF")
@@ -405,7 +394,7 @@ def main(argv):
     # Build the parser
     parser = yacc.yacc()
 
-    print input_
+    # print input_
 
     result = parser.parse(input_)
     print(result)

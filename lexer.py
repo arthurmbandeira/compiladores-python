@@ -85,7 +85,7 @@ def t_newline(t):
 # Error handling rule
 def t_error(t):
     column = find_column(t.lexer.lexdata, t)
-    print('LexError(%s,%r,%d,%d)' % (t.type, t.value, t.lineno, column))
+    print('LexError(%s,%r,%d,%d)' % (t.type, t.value, t.lexer.lineno, column))
     # print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
 

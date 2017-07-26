@@ -1,6 +1,4 @@
-main(){
-int codigo = 1;
-if (codigo){
-codigo == 1 ? codigo == 10 : codigo == 2;
-}
+int main(){
+    int codigo = 1;
+    (codigo == 1) ? (codigo == 10) : (codigo == 2);
 }

@@ -6,9 +6,11 @@ import getopt
 import ply.yacc as yacc
 
 from lexer import tokens
-import lexer
+# import lexer
 
 from semantic import *
+
+line_offset = 0
 
 
 precedence = (
@@ -119,22 +121,27 @@ def p_if_stmt(p):
 
 def p_while_stmt(p):
     ''' whileStmt : WHILE ABREPAREN exp FECHAPAREN ABRECHAVE block FECHACHAVE '''
+    p[0] = WhileStmt(while_=p[1], exp=p[3], block=p[6])
 
 
 def p_for_stmt(p):
     '''forStmt : FOR ABREPAREN assign PONTOVIRGULA exp PONTOVIRGULA assign FECHAPAREN ABRECHAVE block FECHACHAVE'''
+    p[0] = ForStmt(for_=p[1], assign1=p[3], exp=p[5], assign2=p[7], block=p[10])
 
 
 def p_break_stmt(p):
     '''breakStmt : BREAK PONTOVIRGULA'''
+    p[0] = BreakStmt(break_=p[1])
 
 
 def p_read_stmt(p):
     '''readStmt : READ var PONTOVIRGULA'''
+    p[0] = ReadStmt(read=p[1], var=p[2])
 
 
 def p_write_stmt(p):
     '''writeStmt : WRITE expList PONTOVIRGULA'''
+    p[0] = WriteStmt(write=p[1], exp_list=p[2])
 
 
 def p_return_stmt(p):
@@ -142,10 +149,15 @@ def p_return_stmt(p):
     returnStmt : RETURN PONTOVIRGULA
                | RETURN exp PONTOVIRGULA
     '''
+    if len(p) == 3:
+        p[0] = ReturnStmt(return_=p[1])
+    if len(p) == 4:
+        p[0] = IfStmt(return_=p[1], exp=p[2])
 
 
 def p_sub_call(p):
     '''subCall : ID ABREPAREN expList FECHAPAREN'''
+    p[0] = SubCall(id_=p[1], exp_list=p[3])
 
 
 def p_assign(p):
@@ -157,7 +169,7 @@ def p_assign(p):
            | var DIVATRIB exp
            | var MODATRIB exp
     '''
-    p[0] = Assign(p[2], p[1], p[3])
+    p[0] = Assign(op=p[2], left=p[1], right=p[3])
 
 
 def p_var(p):
@@ -195,14 +207,26 @@ def p_exp(p):
         | ABREPAREN exp FECHAPAREN
         | param
     '''
+    # if len(p) == 4:
+    #     p[0] = BinaryOp(op=p[2], left=p[1], right=p[3])
+    # elif len(p) == 3:
+    #     p[0] = UnaryOp(op=p[1], right=p[2])
+    # elif len(p) == 2:
+    #     p[0] = p[1]
+    # elif len(p) == 6:
+    #     p[0] = TernaryOp(op=p[1], op_if=p[3], op_else=p[5])
     if len(p) == 4:
-        p[0] = BinaryOp(op=p[2], left=p[1], right=p[3])
+        if p[1] == '(':
+            p[0] = Exp(op=p[2])
+        else:
+            p[0] = Exp(op=p[2], left=p[1], right=p[3])
     elif len(p) == 3:
-        p[0] = UnaryOp(op=p[1], right=p[2])
+        p[0] = Exp(op=p[1], right=p[2])
     elif len(p) == 2:
-        p[0] = p[1]
+        p[0] = Exp(op=p[1])
     elif len(p) == 6:
-        p[0] = TernaryOp(op=p[1], op_if=p[3], op_else=p[5])
+        print p[1], p[3], p[5]
+        p[0] = Exp(op=p[1], left=p[3], right=p[5])
 
 
 def p_literal(p):
@@ -212,6 +236,7 @@ def p_literal(p):
             | TRUE
             | FALSE
     '''
+    p[0] = Literal(literal=p[1])
 
 
 def p_param_list(p):
@@ -219,6 +244,7 @@ def p_param_list(p):
     paramList : paramSeq
               | empty
     '''
+    p[0] = ParamList(param_seq=p[1])
 
 
 def p_param_seq(p):
@@ -226,13 +252,21 @@ def p_param_seq(p):
     paramSeq : param VIRGULA paramSeq
              | param
     '''
+    if len(p) == 4:
+        p[0] = ParamSeq(param=p[1], param_seq=p[3])
+    elif len(p) == 2:
+        p[0] = ParamSeq(param=p[1])
 
 
 def p_var_dec_list(p):
     '''
     varDecList : varDec varDecList
-              | empty
+               | empty
     '''
+    if p[1]:
+        p[0] = VarDecList(var_dec=p[1], var_dec_list=p[2])
+    # else:
+    #     p_empty(p[1])
 
 
 def p_var_spec_seq(p):
@@ -240,6 +274,10 @@ def p_var_spec_seq(p):
     varSpecSeq : varSpec VIRGULA varSpecSeq
                | varSpec
     '''
+    if len(p) == 4:
+        p[0] = VarSpecSeq(var_spec=p[1], var_spec_seq=p[3])
+    elif len(p) == 2:
+        p[0] = VarSpecSeq(var_spec=p[1])
 
 
 def p_exp_list(p):
@@ -247,6 +285,7 @@ def p_exp_list(p):
     expList : expSeq
             | empty
     '''
+    p[0] = ExpList(exp_seq=p[1])
 
 
 def p_literal_seq(p):
@@ -254,6 +293,10 @@ def p_literal_seq(p):
     literalSeq : literal VIRGULA literalSeq
                | literal
     '''
+    if len(p) == 4:
+        p[0] = LiteralSeq(literal=p[1], literal_seq=p[3])
+    elif len(p) == 2:
+        p[0] = LiteralSeq(literal=p[1])
 
 
 def p_stmt_list(p):
@@ -261,6 +304,8 @@ def p_stmt_list(p):
     stmtList : stmt stmtList
              | empty
     '''
+    if p[1]:
+        p[0] = StmtList(stmt=p[1], stmt_list=p[2])
 
 
 def p_dec_seq(p):
@@ -279,6 +324,10 @@ def p_exp_seq(p):
     expSeq : exp VIRGULA expSeq
            | exp
     '''
+    if len(p) == 2:
+        p[0] = ExpSeq(exp=p[1])
+    elif len(p) == 4:
+        p[0] = ExpSeq(exp=p[1], exp_seq=p[3])
 
 
 def p_empty(p):
@@ -289,8 +338,9 @@ def p_empty(p):
 def p_error(p):
     last_cr = p.lexer.lexdata.rfind('\n', 0, p.lexer.lexpos)
     column = p.lexer.lexpos - last_cr - 1
+
     if p:
-        print("Erro de sintaxe em {0} na linha {1} coluna {2}".format(p.value, p.lexer.lineno, column))
+        print("Erro de sintaxe em {0} na linha {1} coluna {2}".format(p.value, (p.lexer.lineno - line_offset), column))
         # yacc.yacc().errok()
     else:
         print("Erro de sintaxe EOF")
@@ -354,6 +404,8 @@ def main(argv):
 
     # Build the parser
     parser = yacc.yacc()
+
+    print input_
 
     result = parser.parse(input_)
     print(result)

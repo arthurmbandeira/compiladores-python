@@ -175,9 +175,9 @@ def p_var(p):
         | ID ABRECOLCH exp FECHACOLCH
     '''
     if len(p) == 2:
-        p[0] = Variable(id=p[1])
+        p[0] = Variable(id_=p[1])
     else:
-        p[0] = Variable(id=p[1], exp=p[3])
+        p[0] = Variable(id_=p[1], exp=p[3])
 
 
 def p_exp(p):
@@ -271,7 +271,8 @@ def p_exp_list(p):
     expList : expSeq
             | empty
     '''
-    p[0] = ExpList(exp_seq=p[1])
+    if p[1]:
+        p[0] = ExpList(exp_seq=p[1])
 
 
 def p_literal_seq(p):
@@ -357,13 +358,33 @@ def main(argv):
 
     # print input_
 
-    result = parser.parse(input_)
-    print(result)
-    # print(result.dec_seq)
-    # print(result.dec_seq.dec)
-    # print(result.dec_seq.dec.var_dec)
-    # print(result.dec_seq.dec.var_dec.type_)
-    # print(result.dec_seq.dec.var_dec.type_.type_)
+    program = parser.parse(input_)
+
+    # print(program)
+    # print(program.dec_seq)
+    # print(program.dec_seq.dec)
+    # print(program.dec_seq.dec.var_dec)
+    # print(program.dec_seq.dec.var_dec.type_)
+    # print(program.dec_seq.dec.var_dec.var_spec_seq)
+    # print(program.dec_seq.dec.var_dec.var_spec_seq.var_spec)
+    # print(program.dec_seq.dec.var_dec.type_.type_, program.dec_seq.dec.var_dec.var_spec_seq.var_spec.id_)
+    # print(program.dec_seq.dec_seq)
+    # print(program.dec_seq.dec_seq.dec)
+    # print(program.dec_seq.dec_seq.dec.type_)
+    # print(program.dec_seq.dec_seq.dec.type_.type_, program.dec_seq.dec_seq.dec.id_)
+    # print(program.dec_seq.dec_seq.dec.param_list)
+    # print(program.dec_seq.dec_seq.dec.block)
+    # print(program.dec_seq.dec_seq.dec.block.stmt_list)
+    # print(program.dec_seq.dec_seq.dec.block.stmt_list.stmt)
+    # print(program.dec_seq.dec_seq.dec.block.stmt_list.stmt.stmt)
+    # print(program.dec_seq.dec_seq.dec.block.stmt_list.stmt.stmt.write)
+    # print(program.dec_seq.dec_seq.dec.block.stmt_list.stmt.stmt.exp_list)
+    # print(program.dec_seq.dec_seq.dec.block.stmt_list.stmt.stmt.exp_list.exp_seq)
+    # print(program.dec_seq.dec_seq.dec.block.stmt_list.stmt.stmt.exp_list.exp_seq.exp)
+    # print(program.dec_seq.dec_seq.dec.block.stmt_list.stmt.stmt.exp_list.exp_seq.exp.op)
+    # print(program.dec_seq.dec_seq.dec.block.stmt_list.stmt.stmt.exp_list.exp_seq.exp.op.id_)
+    # print(program.dec_seq.dec_seq.dec.block.stmt_list.stmt.stmt.write, program.dec_seq.dec_seq.dec.block.stmt_list.stmt.stmt.exp_list.exp_seq.exp.op.id_)
+    # print(program.dec_seq.dec_seq.dec.block.stmt_list.stmt.stmt_list)
 
 
 if __name__ == "__main__":

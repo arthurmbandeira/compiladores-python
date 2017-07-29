@@ -1,0 +1,12 @@
+int a, b, c;
+// int b = 3;
+// bool v = true, f = false;
+// string str1, str2 = "String";
+// int c[2] = {1, 2};
+int main() {
+   write a;
+   // write b;
+   // write v, f;
+   // write str1, str2;
+   // write c;
+}

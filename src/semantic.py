@@ -1,5 +1,20 @@
-class Node(object):
+# -*- coding: utf-8 -*-
+import sys
+from utils import SemanticError
+from abc import ABCMeta, abstractmethod
+
+declared_variables = []
+
+class Node:
+
+    # __metaclass__ = ABCMeta   
+
     __slots__ = ()
+
+    def __init__(self): pass
+
+    # @abstractmethod
+    def check_node(self): pass
 
 
 class Program(Node):
@@ -41,6 +56,9 @@ class VarSpec(Node):
         self.number = number
         self.literal_seq = literal_seq
 
+    def check_node(self):
+        return self.id_
+
 
 class Type(Node):
 
@@ -48,6 +66,9 @@ class Type(Node):
 
     def __init__(self, type_):
         self.type_ = type_
+
+    def check_node(self):
+        return self.type_
 
 
 class Param(Node):
@@ -167,10 +188,10 @@ class Assign(Node):
 
 class Variable(Node):
 
-    __slots__ = ('id', 'exp')
+    __slots__ = ('id_', 'exp')
 
-    def __init__(self, id, exp=None):
-        self.id = id
+    def __init__(self, id_, exp=None):
+        self.id_ = id_
         self.exp = exp
 
 
@@ -225,6 +246,20 @@ class VarSpecSeq(Node):
     def __init__(self, var_spec, var_spec_seq=None):
         self.var_spec = var_spec
         self.var_spec_seq = var_spec_seq
+        self.check_node()
+
+    def check_node(self):
+        global declared_variables
+        # print self.var_spec.id_, self.var_spec, self.var_spec_seq
+        # print self.var_spec, self.var_spec_seq
+        # print self.var_spec.check_node()
+        
+        if self.var_spec_seq:
+            declared_variables.append(self.var_spec.check_node())
+            # self.var_spec.check_node()
+        else:
+            print declared_variables
+            return self.var_spec
 
 
 class ExpList(Node):
@@ -269,6 +304,8 @@ class ExpSeq(Node):
     def __init__(self, exp, exp_seq=None):
         self.exp = exp
         self.exp_seq = exp_seq
+
+
 
 
 # class BinaryOp(Node):

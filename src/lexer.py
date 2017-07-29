@@ -1,36 +1,42 @@
 # -*- coding: utf-8 -*-
-
 import sys
 import getopt
-
 import re
 import ply.lex as lex
 
+
 palavras_reservadas = {
-    'bool' : 'BOOL',
-    'string' : 'STRING',
-    'int' : 'INT',
-    'for' : 'FOR',
-    'if' : 'IF',
-    'else' : 'ELSE',
-    'while' : 'WHILE',
-    'true' : 'TRUE',
-    'false' : 'FALSE',
-    'return' : 'RETURN',
-    'break' : 'BREAK',
-    'read' : 'READ',
-    'write' : 'WRITE',
+    'bool': 'BOOL',
+    'string': 'STRING',
+    'int': 'INT',
+    'for': 'FOR',
+    'if': 'IF',
+    'else': 'ELSE',
+    'while': 'WHILE',
+    'true': 'TRUE',
+    'false': 'FALSE',
+    'return': 'RETURN',
+    'break': 'BREAK',
+    'read': 'READ',
+    'write': 'WRITE',
 }
+
 
 tokens = [
     'ID', 'CADEIA', 'NUMBER',
-    'ABREPAREN', 'FECHAPAREN', 'ABRECOLCH', 'FECHACOLCH', 'ABRECHAVE', 'FECHACHAVE',
+    'ABREPAREN', 'FECHAPAREN',
+    'ABRECOLCH', 'FECHACOLCH',
+    'ABRECHAVE', 'FECHACHAVE',
     'VIRGULA', 'PONTOVIRGULA',
     'MAIS', 'MENOS', 'MULT', 'DIV', 'MOD',
-    'IGUAL', 'DIFERENTE', 'MAIOR', 'MAIORIGUAL', 'MENOR', 'MENORIGUAL', 'OU', 'E', 'NEG',
-    'ATRIB', 'MAISATRIB', 'MENOSATRIB', 'MULTATRIB', 'DIVATRIB', 'MODATRIB', 'SINAL',
+    'IGUAL', 'DIFERENTE',
+    'MAIOR', 'MAIORIGUAL', 'MENOR', 'MENORIGUAL',
+    'OU', 'E', 'NEG',
+    'ATRIB', 'MAISATRIB', 'MENOSATRIB',
+    'MULTATRIB', 'DIVATRIB', 'MODATRIB', 'SINAL',
     'TERNARIOSE', 'TERNARIOSENAO',
 ] + list(palavras_reservadas.values())
+
 
 t_MAIS = r'\+'
 t_MENOS = r'-'
@@ -64,6 +70,8 @@ t_MODATRIB = r'%='
 t_TERNARIOSE = r'\?'
 t_TERNARIOSENAO = r':'
 t_CADEIA = r'\"(\n|.)*?\"'
+t_ignore = " \t\v\r"
+
 
 def t_NUMBER(t):
     r'\d+'
@@ -75,12 +83,10 @@ def t_NUMBER(t):
     return t
 
 
-# ignorando TAB
-t_ignore = " \t\v\r"
-
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
+
 
 # Error handling rule
 def t_error(t):
@@ -89,18 +95,21 @@ def t_error(t):
     # print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
 
+
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
-    t.type = palavras_reservadas.get(t.value,'ID')
+    t.type = palavras_reservadas.get(t.value, 'ID')
     return t
+
 
 def t_comment_multiline(t):
     r'((//.*)|(/\*(.|\n)*\*/))'
     # No return value. Token discarded
     pass
 
+
 def find_column(input, token):
-    last_cr = input.rfind('\n',0,lex.lexer.lexpos)
+    last_cr = input.rfind('\n', 0, lex.lexer.lexpos)
     if last_cr < 0:
         last_cr = 0
     column = (lex.lexer.lexpos - last_cr) + 1

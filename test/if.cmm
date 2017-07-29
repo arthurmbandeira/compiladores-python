@@ -1,6 +1,6 @@
 int a, b = 10;
-int func() {
+int main() {
    if (a == b) {
-       a = (a + b);
+        write a;
    }
 }

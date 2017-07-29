@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
-
 import sys
 import getopt
-
 import ply.yacc as yacc
+import ply.lex as lex
+
 
 from lexer import tokens
-import ply.lex as lex
-lex.lexer.lineno = 1
-
 from semantic import *
 
+
+lex.lexer.lineno = 1
 
 
 precedence = (
@@ -21,11 +20,9 @@ precedence = (
     ('left', 'MAIOR', 'MAIORIGUAL', 'MENOR', 'MENORIGUAL'),
     ('left', 'MAIS', 'MENOS'),
     ('left', 'MULT', 'DIV'),
-    ('left', 'NEG', 'SINAL',)
+    ('right', 'NEG', 'SINAL'),
 )
-   
 
-# print tokens
 
 def p_program(p):
     ''' program : decSeq'''
@@ -335,42 +332,6 @@ def p_error(p):
         print("Erro de sintaxe EOF")
 
 
-# input_ = '''
-# int v[10];
-# /*
-# Procedimento de ordenação por troca
-# Observe como um parâmetro de arranjo é declarado
-# */
-# bubblesort(int v[], int n) {
-#   int i=0, j;
-#   bool trocou = true;
-#   while (i < n-1 && trocou) {
-#     trocou = false;
-#     for (j=0; j < n-i-1; j+=1) {
-#       if (v[j] > v[j+1]) {
-#         int aux;
-#         aux = v[j];
-#         v[j] = v[j+1];
-#         v[j+1] = aux;
-#         trocou = true;
-#       }
-#     }
-#     i += 1;
-#   }
-# }
-# main() {
-#   int i;
-#   for (i=0; i < 10; i+=1) {
-#     read v[i];
-#   }
-#   bubblesort(v, 10);
-#   for (i=0; i < 10; i+=1) {
-#     write v[i], " ";
-#   }
-# }
-# '''
-
-
 def main(argv):
     try:
         opts, args = getopt.getopt(argv, "hf:", ["file"])
@@ -398,11 +359,11 @@ def main(argv):
 
     result = parser.parse(input_)
     print(result)
-    print(result.dec_seq)
-    print(result.dec_seq.dec)
-    print(result.dec_seq.dec.var_dec)
-    print(result.dec_seq.dec.var_dec.type_)
-    print(result.dec_seq.dec.var_dec.type_.type_)
+    # print(result.dec_seq)
+    # print(result.dec_seq.dec)
+    # print(result.dec_seq.dec.var_dec)
+    # print(result.dec_seq.dec.var_dec.type_)
+    # print(result.dec_seq.dec.var_dec.type_.type_)
 
 
 if __name__ == "__main__":

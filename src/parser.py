@@ -359,6 +359,8 @@ def main(argv):
     # print input_
 
     program = parser.parse(input_)
+    program.check_node()
+    print declared_variables
 
     # print(program)
     # print(program.dec_seq)

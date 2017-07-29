@@ -24,6 +24,9 @@ class Program(Node):
     def __init__(self, dec_seq):
         self.dec_seq = dec_seq
 
+    def check_node(self):
+        self.dec_seq.check_node()
+
 
 class Dec(Node):
 
@@ -36,6 +39,10 @@ class Dec(Node):
         self.block = block
         self.var_dec = var_dec
 
+    def check_node(self):
+        if self.var_dec:
+            self.var_dec.check_node()
+
 
 class VarDec(Node):
 
@@ -44,6 +51,10 @@ class VarDec(Node):
     def __init__(self, type_, var_spec_seq):
         self.type_ = type_
         self.var_spec_seq = var_spec_seq
+
+    def check_node(self):
+        print self.type_.check_node()
+        print self.var_spec_seq.check_node()
 
 
 class VarSpec(Node):
@@ -57,6 +68,12 @@ class VarSpec(Node):
         self.literal_seq = literal_seq
 
     def check_node(self):
+        if self.literal:
+            self.literal.check_node()
+        if self.number:
+            self.number.check_node()
+        if self.literal_seq:
+            self.literal_seq.check_node()
         return self.id_
 
 
@@ -243,23 +260,22 @@ class VarSpecSeq(Node):
 
     __slots__ = ('var_spec', 'var_spec_seq')
 
+    variables = []
+
     def __init__(self, var_spec, var_spec_seq=None):
         self.var_spec = var_spec
-        self.var_spec_seq = var_spec_seq
-        self.check_node()
+        self.var_spec_seq = var_spec_seq        
 
     def check_node(self):
-        global declared_variables
-        # print self.var_spec.id_, self.var_spec, self.var_spec_seq
-        # print self.var_spec, self.var_spec_seq
-        # print self.var_spec.check_node()
+        # global declared_variables
+        # print 'ok'
+        self.variables.append(self.var_spec.check_node())
         
         if self.var_spec_seq:
-            declared_variables.append(self.var_spec.check_node())
-            # self.var_spec.check_node()
+            self.var_spec_seq.check_node()
         else:
-            print declared_variables
-            return self.var_spec
+            print self.variables
+            return self.variables
 
 
 class ExpList(Node):
@@ -295,6 +311,11 @@ class DecSeq(Node):
     def __init__(self, dec, dec_seq=None):
         self.dec = dec
         self.dec_seq = dec_seq
+
+    def check_node(self):
+        self.dec.check_node()
+        if self.dec_seq:
+            self.dec_seq.check_node()
 
 
 class ExpSeq(Node):

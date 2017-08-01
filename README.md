@@ -13,4 +13,4 @@ CMM é o acrônimo de C-Mais-ou-Menos, uma linguagem mais ou menos parecida com 
    - ``` python src/parser.py -f test/< arquivo_de_teste.cmm > ```
 
  #### Arthur Manuel Bandeira
- #### Carlos Henrique
+ #### Carlos Henrique Paisca

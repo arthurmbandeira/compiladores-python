@@ -149,7 +149,7 @@ def p_return_stmt(p):
     if len(p) == 3:
         p[0] = ReturnStmt(return_=p[1])
     if len(p) == 4:
-        p[0] = IfStmt(return_=p[1], exp=p[2])
+        p[0] = ReturnStmt(return_=p[1], exp=p[2])
 
 
 def p_sub_call(p):
@@ -356,37 +356,11 @@ def main(argv):
     # Build the parser
     parser = yacc.yacc()
 
-    # print input_
-
     program = parser.parse(input_)
-    program.check_node()
-    print declared_variables
-
-    # print(program)
-    # print(program.dec_seq)
-    # print(program.dec_seq.dec)
-    # print(program.dec_seq.dec.var_dec)
-    # print(program.dec_seq.dec.var_dec.type_)
-    # print(program.dec_seq.dec.var_dec.var_spec_seq)
-    # print(program.dec_seq.dec.var_dec.var_spec_seq.var_spec)
-    # print(program.dec_seq.dec.var_dec.type_.type_, program.dec_seq.dec.var_dec.var_spec_seq.var_spec.id_)
-    # print(program.dec_seq.dec_seq)
-    # print(program.dec_seq.dec_seq.dec)
-    # print(program.dec_seq.dec_seq.dec.type_)
-    # print(program.dec_seq.dec_seq.dec.type_.type_, program.dec_seq.dec_seq.dec.id_)
-    # print(program.dec_seq.dec_seq.dec.param_list)
-    # print(program.dec_seq.dec_seq.dec.block)
-    # print(program.dec_seq.dec_seq.dec.block.stmt_list)
-    # print(program.dec_seq.dec_seq.dec.block.stmt_list.stmt)
-    # print(program.dec_seq.dec_seq.dec.block.stmt_list.stmt.stmt)
-    # print(program.dec_seq.dec_seq.dec.block.stmt_list.stmt.stmt.write)
-    # print(program.dec_seq.dec_seq.dec.block.stmt_list.stmt.stmt.exp_list)
-    # print(program.dec_seq.dec_seq.dec.block.stmt_list.stmt.stmt.exp_list.exp_seq)
-    # print(program.dec_seq.dec_seq.dec.block.stmt_list.stmt.stmt.exp_list.exp_seq.exp)
-    # print(program.dec_seq.dec_seq.dec.block.stmt_list.stmt.stmt.exp_list.exp_seq.exp.op)
-    # print(program.dec_seq.dec_seq.dec.block.stmt_list.stmt.stmt.exp_list.exp_seq.exp.op.id_)
-    # print(program.dec_seq.dec_seq.dec.block.stmt_list.stmt.stmt.write, program.dec_seq.dec_seq.dec.block.stmt_list.stmt.stmt.exp_list.exp_seq.exp.op.id_)
-    # print(program.dec_seq.dec_seq.dec.block.stmt_list.stmt.stmt_list)
+    if program:
+        program.print_name()
+        program.check_node()
+        print('Variaveis declaradas', declared_variables)
 
 
 if __name__ == "__main__":

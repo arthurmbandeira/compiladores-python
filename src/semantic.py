@@ -7,14 +7,17 @@ declared_variables = []
 
 class Node:
 
-    # __metaclass__ = ABCMeta   
+    __metaclass__ = ABCMeta
 
     __slots__ = ()
 
     def __init__(self): pass
 
-    # @abstractmethod
+    @abstractmethod
     def check_node(self): pass
+
+    def print_name(self):
+        print(self.__class__.__name__)
 
 
 class Program(Node):
@@ -25,6 +28,7 @@ class Program(Node):
         self.dec_seq = dec_seq
 
     def check_node(self):
+        self.dec_seq.print_name()
         self.dec_seq.check_node()
 
 
@@ -40,7 +44,13 @@ class Dec(Node):
         self.var_dec = var_dec
 
     def check_node(self):
+        if self.type_:
+            self.type_.print_name()
+            self.type_.check_node()
+        if self.id_:
+            print('id', self.id_)
         if self.var_dec:
+            self.var_dec.print_name()
             self.var_dec.check_node()
 
 
@@ -53,8 +63,10 @@ class VarDec(Node):
         self.var_spec_seq = var_spec_seq
 
     def check_node(self):
-        print self.type_.check_node()
-        print self.var_spec_seq.check_node()
+        self.type_.print_name()
+        self.type_.check_node()
+        self.var_spec_seq.print_name()
+        self.var_spec_seq.check_node()
 
 
 class VarSpec(Node):
@@ -69,11 +81,15 @@ class VarSpec(Node):
 
     def check_node(self):
         if self.literal:
+            self.literal.print_name()
             self.literal.check_node()
         if self.number:
-            self.number.check_node()
+            print('number', self.number)
+            return self.number
         if self.literal_seq:
+            self.literal_seq.print_name()
             self.literal_seq.check_node()
+        print('id', self.id_)
         return self.id_
 
 
@@ -85,6 +101,7 @@ class Type(Node):
         self.type_ = type_
 
     def check_node(self):
+        print('type', self.type_)
         return self.type_
 
 
@@ -97,6 +114,14 @@ class Param(Node):
         self.id_ = id_
         self.array = array
 
+    def check_node(self):
+        self.type_.print_name()
+        self.type_.check_node()
+        self.id_.print_name()
+        self.id_.check_node()
+        self.array.print_name()
+        self.array.check_node()
+
 
 class Block(Node):
 
@@ -106,6 +131,12 @@ class Block(Node):
         self.var_dec_list = var_dec_list
         self.stmt_list = stmt_list
 
+    def check_node(self):
+        self.var_dec_list.print_name()
+        self.var_dec_list.check_node()
+        self.stmt_list.print_name()
+        self.stmt_list.check_node()
+
 
 class Stmt(Node):
 
@@ -113,6 +144,10 @@ class Stmt(Node):
 
     def __init__(self, stmt):
         self.stmt = stmt
+
+    def check_node(self):
+        self.stmt.print_name()
+        self.stmt.check_node()
 
 
 class IfStmt(Node):
@@ -126,6 +161,20 @@ class IfStmt(Node):
         self.else_ = else_
         self.block2 = block2
 
+    def check_node(self):
+        self.exp.print_name()
+        self.exp.check_node()
+        self.block1.print_name()
+        self.block1.check_node()
+        if self.else_:
+            self.else_.print_name()
+            self.else_.check_node()
+        if self.block2:
+            self.block2.print_name()
+            self.block2.check_node()
+        print('if stmt', self.if_)
+        return self.if_
+
 
 class WhileStmt(Node):
 
@@ -135,6 +184,14 @@ class WhileStmt(Node):
         self.while_ = while_
         self.exp = exp
         self.block = block
+
+    def check_node(self):
+        self.exp.print_name()
+        self.exp.check_node()
+        self.block.print_name()
+        self.block.check_node()
+        print('while stmt', self.while_)
+        return self.while_
 
 
 class ForStmt(Node):
@@ -148,6 +205,18 @@ class ForStmt(Node):
         self.assign2 = assign2
         self.block = block
 
+    def check_node(self):
+        self.assign1.print_name()
+        self.assign1.check_node()
+        self.exp.print_name()
+        self.exp.check_node()
+        self.assign2.print_name()
+        self.assign2.check_node()
+        self.block.print_name()   
+        self.block.check_node()   
+        print('for stmt', self.for_)
+        return self.for_
+
 
 class BreakStmt(Node):
 
@@ -155,6 +224,10 @@ class BreakStmt(Node):
 
     def __init__(self, break_):
         self.break_ = break_
+
+    def check_node(self):
+        print('break stmt', self.break_)
+        return self.break_
 
 
 class ReadStmt(Node):
@@ -165,6 +238,12 @@ class ReadStmt(Node):
         self.read = read
         self.var = var
 
+    def check_node(self):
+        self.var.print_name()
+        self.var.check_node()
+        print('read stmt', self.read)
+        return self.read       
+
 
 class WriteStmt(Node):
 
@@ -174,14 +253,27 @@ class WriteStmt(Node):
         self.write = write
         self.exp_list = exp_list
 
+    def check_node(self):
+        self.exp_list.print_name()
+        self.exp_list.check_node()
+        print('write stmt', self.write)
+        return self.write
+
 
 class ReturnStmt(Node):
 
     __slots__ = ('return_', 'exp')
 
-    def __init__(self, return_, exp):
+    def __init__(self, return_, exp=None):
         self.return_ = return_
         self.exp = exp
+
+    def check_node(self):
+        if self.exp:
+            self.exp.print_name()
+            self.exp.check_node()
+        print('return stmt', self.return_)
+        return self.return_
 
 
 class SubCall(Node):
@@ -191,6 +283,12 @@ class SubCall(Node):
     def __init__(self, id_, exp_list):
         self.id_ = id_
         self.exp_list = exp_list
+
+    def check_node(self):
+        self.exp_list.print_name()
+        self.exp_list.check_node()
+        print('id', self.id_)
+        return self.id_
 
 
 class Assign(Node):
@@ -202,6 +300,14 @@ class Assign(Node):
         self.left = left
         self.right = right
 
+    def check_node(self):
+        self.op.print_name()
+        self.op.check_node()
+        self.left.print_name()
+        self.left.check_node()
+        self.right.print_name()
+        self.right.check_node()
+
 
 class Variable(Node):
 
@@ -210,6 +316,13 @@ class Variable(Node):
     def __init__(self, id_, exp=None):
         self.id_ = id_
         self.exp = exp
+
+    def check_node():
+        if self.exp:
+            self.exp.print_name()
+            self.exp.check_node()
+        print('id', self.id_)
+        return self.id_
 
 
 class Exp(Node):
@@ -221,6 +334,16 @@ class Exp(Node):
         self.left = left
         self.right = right
 
+    def check_node(self):
+        if self.left:
+            self.left.print_name()
+            self.left.check_node()
+        if self.right:
+            self.right.print_name()
+            self.right.check_node()
+        self.op.print_name()
+        self.op.check_node()
+
 
 class Literal(Node):
 
@@ -229,6 +352,11 @@ class Literal(Node):
     def __init__(self, literal):
         self.literal = literal
 
+    def check_node(self):
+        print('literal:', self.literal)
+        return self.literal
+
+
 
 class ParamList(Node):
 
@@ -236,6 +364,10 @@ class ParamList(Node):
 
     def __init__(self, param_seq):
         self.param_seq = param_seq
+
+    def check_node(self):
+        self.param_seq.print_name()
+        self.param_seq.check_node()
 
 
 class ParamSeq(Node):
@@ -246,6 +378,13 @@ class ParamSeq(Node):
         self.param = param
         self.param_seq = param_seq
 
+    def check_node(self):
+        if self.param_seq:
+            self.param_seq.print_name()
+            self.param_seq.check_node()
+        self.param.print_name()
+        self.param.check_node()
+
 
 class VarDecList(Node):
 
@@ -255,27 +394,32 @@ class VarDecList(Node):
         self.var_dec = var_dec
         self.var_dec_list = var_dec_list
 
+    def check_node(self):
+        if self.var_dec:
+            self.var_dec.print_name()
+            self.var_dec.check_node()
+        if self.var_dec_list:
+            self.var_dec_list.print_name()
+            self.var_dec_list.check_node()
+
 
 class VarSpecSeq(Node):
 
     __slots__ = ('var_spec', 'var_spec_seq')
 
-    variables = []
+    # variables = []
 
     def __init__(self, var_spec, var_spec_seq=None):
         self.var_spec = var_spec
-        self.var_spec_seq = var_spec_seq        
+        self.var_spec_seq = var_spec_seq
 
     def check_node(self):
-        # global declared_variables
-        # print 'ok'
-        self.variables.append(self.var_spec.check_node())
+        global declared_variables
         
+        self.var_spec.print_name()
+        declared_variables.append(self.var_spec.check_node())
         if self.var_spec_seq:
-            self.var_spec_seq.check_node()
-        else:
-            print self.variables
-            return self.variables
+            return self.var_spec_seq.check_node()
 
 
 class ExpList(Node):
@@ -284,6 +428,10 @@ class ExpList(Node):
 
     def __init__(self, exp_seq):
         self.exp_seq = exp_seq
+
+    def check_node(self):
+        self.exp_seq.print_name()
+        self.exp_seq.check_node()
 
 
 class LiteralSeq(Node):
@@ -294,6 +442,13 @@ class LiteralSeq(Node):
         self.literal = literal
         self.literal_seq = literal_seq
 
+    def check_node(self):
+        if self.literal_seq:
+            self.literal_seq.print_name()
+            self.literal_seq.check_node()
+        self.literal.print_name()
+        self.literal.check_node()
+
 
 class StmtList(Node):
 
@@ -302,6 +457,12 @@ class StmtList(Node):
     def __init__(self, stmt, stmt_list):
         self.stmt = stmt
         self.stmt_list = stmt_list
+
+    def check_node(self):
+        self.stmt.print_name()
+        self.stmt.check_node()
+        self.stmt_list.print_name()
+        self.stmt_list.check_node()
 
 
 class DecSeq(Node):
@@ -313,8 +474,10 @@ class DecSeq(Node):
         self.dec_seq = dec_seq
 
     def check_node(self):
+        self.dec.print_name()
         self.dec.check_node()
         if self.dec_seq:
+            self.dec_seq.print_name()
             self.dec_seq.check_node()
 
 
@@ -326,27 +489,9 @@ class ExpSeq(Node):
         self.exp = exp
         self.exp_seq = exp_seq
 
-
-
-
-# class BinaryOp(Node):
-#     __slots__ = ('op', 'left', 'right')
-#     def __init__(self, op, left, right):
-#         self.op = op
-#         self.left = left
-#         self.right = right
-
-
-# class UnaryOp(Node):
-#     __slots__ = ('op', 'right')
-#     def __init__(self, op, right):
-#         self.op = op
-#         self.right = right
-
-
-# class TernaryOp(Node):
-#     __slots__ = ('op', 'op_if', 'op_else')
-#     def __init__(self, op, op_if, op_else):
-#         self.op = op
-#         self.op_if = op_if
-#         self.op_else = op_else
+    def check_node(self):
+        if self.exp_seq:
+            self.exp_seq.print_name()
+            self.exp_seq.check_node()
+        self.exp.print_name()
+        self.exp.check_node()

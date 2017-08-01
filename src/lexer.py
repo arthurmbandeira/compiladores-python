@@ -78,7 +78,7 @@ def t_NUMBER(t):
     try:
         t.value = int(t.value)
     except ValueError:
-        print("Valor Inteiro muito grande %d", t.value)
+        print("Valor inteiro muito grande %d", t.value)
         t.value = 0
     return t
 
@@ -88,11 +88,9 @@ def t_newline(t):
     t.lexer.lineno += len(t.value)
 
 
-# Error handling rule
 def t_error(t):
     column = find_column(t.lexer.lexdata, t)
     print('LexError(%s,%r,%d,%d)' % (t.type, t.value, t.lineno, column))
-    # print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
 
 
@@ -147,6 +145,8 @@ def main(argv):
         if not tok:
             break      # No more input
         token_list.append(tok)
+        
+        # # Descomentar a linha abaixo para imprimir a execução do analisador léxico
         # print('LexToken(%s,%r,%d,%d)' % (tok.type, tok.value, tok.lineno, column))
 
     file.close()

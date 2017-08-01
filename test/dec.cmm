@@ -1,4 +1,5 @@
 int a, b, c;
+bool d;
 // int b = 3;
 // bool v = true, f = false;
 // string str1, str2 = "String";
